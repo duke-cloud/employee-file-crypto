@@ -1,0 +1,57 @@
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'upload_file' %}">Secure File Vault</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#mainNav" aria-controls="mainNav"
+                    aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+        
+            <div class="collapse navbar-collapse" id="mainNav">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- File Upload & List -->
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'upload_file' %}">Upload</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'file_list' %}">My Files</a>
+                </li>
+        
+                <!-- Employee Management (staff only) -->
+                {% if user.is_staff %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'employee_list' %}">Employees</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+                  </li>
+                {% endif %}
+              </ul>
+        
+              <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <!-- Authentication links -->
+                {% if user.is_authenticated %}
+                  <li class="nav-item">
+                    <span class="navbar-text me-2">
+                      Logged in as <strong>{{ user.username }}</strong>
+                    </span>
+                  </li>
+                  <!-- in base.html nav -->
+<form method="post" action="{% url 'logout' %}" class="d-inline">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-link nav-link">Logout</button>
+</form>
+
+                {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </nav>
+        

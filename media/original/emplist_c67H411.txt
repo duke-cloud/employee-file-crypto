@@ -1,0 +1,78 @@
+<!-- {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <h2>Employees</h2>
+  <button id="openEmployeeCreateBtn" class="btn btn-primary mb-3">Add Employee</button>
+
+  <table id="employees-table" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Department</th>
+        <th>Position</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for emp in employees %}
+      <tr data-emp-id="{{ emp.id }}">
+        <td>{{ emp.first_name }} {{ emp.last_name }}</td>
+        <td>{{ emp.email }}</td>
+        <td>{{ emp.department.name }}</td>
+        <td>{{ emp.position }}</td>
+        <td>
+          <a class="btn btn-sm btn-info" 
+             href="{% url 'employee_detail' emp.pk %}">
+            View
+          </a>
+          <button class="btn btn-sm btn-warning btn-edit-emp">
+            Edit
+          </button>
+          <button class="btn btn-sm btn-danger btn-delete-emp">
+            Delete
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+      <script>
+
+
+function getCookie(name) {
+  let v = document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');
+  return v ? v.pop() : '';
+}
+
+
+
+        document.querySelectorAll('.btn-delete-emp').forEach(btn => {
+          btn.addEventListener('click', async e => {
+            if (!confirm("Really delete this employee?")) return;
+            e.preventDefault();
+            const tr = e.target.closest('tr');
+            const empId = tr.dataset.empId;
+        
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        
+            const resp = await fetch(`{% url 'employee_delete' 0 %}`.replace('/0/', `/${empId}/`), {
+              method: 'POST',
+              body: formData,
+              headers: {
+  'X-CSRFToken': getCookie('csrftoken')
+}
+
+            });
+            const data = await resp.json();
+            if (data.success) {
+              tr.remove();
+            } else {
+              alert("Could not delete");
+            }
+          });
+        });
+        </script>
+        
+    </tbody>
+  </table>
+{% endblock %}
